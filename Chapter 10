@@ -1,0 +1,71 @@
+write a code on Finding the shortest path a traveling salesperson can take to visit each of the capitals of the 50 states in the United States
+traveling by air between cities in a straight line, visiting each city only once and stopping back at the city you began with.
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+
+struct City {
+    std::string name;
+    double latitude;
+    double longitude;
+};
+
+double calculateDistance(const City& city1, const City& city2) {
+    double dx = city1.latitude - city2.latitude;
+    double dy = city1.longitude - city2.longitude;
+    return std::sqrt(dx*dx + dy*dy);
+}
+
+City findNearestCity(const City& currentCity, const std::vector<City>& remainingCities) {
+    double minDistance = std::numeric_limits<double>::infinity();
+    City nearestCity;
+
+    for (const City& city : remainingCities) {
+        double distance = calculateDistance(currentCity, city);
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestCity = city;
+        }
+    }
+
+    return nearestCity;
+}
+
+void tspNearestNeighbor(const std::vector<City>& cities) {
+    std::vector<City> remainingCities = cities;
+    std::vector<City> tour;
+    City currentCity = remainingCities[0]; // Start from the first city
+
+    while (!remainingCities.empty()) {
+        tour.push_back(currentCity);
+        auto it = std::find(remainingCities.begin(), remainingCities.end(), currentCity);
+        if (it != remainingCities.end()) {
+            remainingCities.erase(it);
+        }
+        if (!remainingCities.empty()) {
+            currentCity = findNearestCity(currentCity, remainingCities);
+        }
+    }
+
+    // Add the starting city to complete the tour
+    tour.push_back(tour[0]);
+
+    // Print the tour
+    std::cout << "Shortest path for visiting each state capital:\n";
+    for (const City& city : tour) {
+        std::cout << city.name << "\n";
+    }
+}
+
+int main() {
+    std::vector<City> stateCapitals = {
+        {"Montgomery", 32.806671, -86.791130},
+        // Add the remaining state capitals with their coordinates here
+        // ...
+    };
+
+    tspNearestNeighbor(stateCapitals);
+
+    return 0;
+}
