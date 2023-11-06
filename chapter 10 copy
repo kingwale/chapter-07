@@ -1,0 +1,85 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <chrono>
+#include <limits>
+
+const int INF = std::numeric_limits<int>::max();
+
+std::vector<std::vector<int>> readDistanceMatrix(const std::string& filename) {
+    std::ifstream file(filename);
+    std::vector<std::vector<int>> distanceMatrix;
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::istringstream ss(line);
+        std::vector<int> row;
+        int distance;
+
+        while (ss >> distance) {
+            row.push_back(distance);
+            if (ss.peek() == ',')
+                ss.ignore();
+        }
+
+        distanceMatrix.push_back(row);
+    }
+
+    return distanceMatrix;
+}
+
+int findNearestCity(int currentCity, const std::vector<std::vector<int>>& distanceMatrix, std::vector<bool>& visited) {
+    int minDistance = INF;
+    int nearestCity = -1;
+
+    for (int i = 0; i < distanceMatrix.size(); ++i) {
+        if (!visited[i] && distanceMatrix[currentCity][i] < minDistance) {
+            minDistance = distanceMatrix[currentCity][i];
+            nearestCity = i;
+        }
+    }
+
+    return nearestCity;
+}
+
+void tspNearestNeighbor(const std::vector<std::vector<int>>& distanceMatrix) {
+    int numCities = distanceMatrix.size();
+    std::vector<bool> visited(numCities, false);
+    std::vector<int> tour;
+
+    int currentCity = 0;
+    visited[currentCity] = true;
+    tour.push_back(currentCity);
+
+    for (int i = 0; i < numCities - 1; ++i) {
+        int nearest = findNearestCity(currentCity, distanceMatrix, visited);
+        visited[nearest] = true;
+        tour.push_back(nearest);
+        currentCity = nearest;
+    }
+
+    // Add the starting city to complete the tour
+    tour.push_back(tour[0]);
+
+    // Print the tour
+    std::cout << "Shortest path for visiting each city:\n";
+    for (int city : tour) {
+        std::cout << city << " ";
+    }
+    std::cout << "\n";
+}
+
+int main() {
+    std::string filename = "city_distances.csv";
+    std::vector<std::vector<int>> distanceMatrix = readDistanceMatrix(filename);
+
+    auto start = std::chrono::high_resolution_clock::now();
+    tspNearestNeighbor(distanceMatrix);
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "Execution time: " << duration.count() << " seconds\n";
+
+    return 0;
+}
