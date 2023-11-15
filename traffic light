@@ -1,0 +1,45 @@
+class TrafficLight:
+    def __init__(self):
+        self.state = "Green"
+
+    def transition(self, event):
+        if self.state == "Green":
+            if event == "Timeout":
+                self.state = "Yellow"
+            elif event == "Pedestrian":
+                self.state = "Pedestrian Wait"
+
+        elif self.state == "Yellow":
+            if event == "Timeout":
+                self.state = "Red"
+            elif event == "Pedestrian":
+                self.state = "Pedestrian Wait"
+
+        elif self.state == "Red":
+            if event == "Timeout":
+                self.state = "Green"
+            elif event == "Pedestrian":
+                self.state = "Pedestrian Cross"
+
+        elif self.state == "Pedestrian Wait":
+            if event == "Timeout":
+                self.state = "Red"
+            elif event == "Pedestrian":
+                self.state = "Pedestrian Cross"
+
+        elif self.state == "Pedestrian Cross":
+            if event == "Timeout":
+                self.state = "Green"
+            elif event == "Pedestrian":
+                self.state = "Pedestrian Wait"
+
+        print(f"Current State: {self.state}")
+
+# Example Usage
+traffic_light = TrafficLight()
+traffic_light.transition("Timeout")  # Switch to Yellow
+traffic_light.transition("Timeout")  # Switch to Red
+traffic_light.transition("Pedestrian")  # Switch to Pedestrian Wait
+traffic_light.transition("Timeout")  # Switch to Red
+traffic_light.transition("Pedestrian")  # Switch to Pedestrian Cross
+traffic_light.transition("Timeout")  # Switch to Green
