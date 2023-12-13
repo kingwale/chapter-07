@@ -1,0 +1,58 @@
+"Topic: a simplified example that mimics a basic phone menu system with a few options. Here's a C++ code simulating an automated phone system:"
+#include <iostream>
+#include <string>
+
+void displayMenu() {
+    std::cout << "Welcome to the Automated Phone System\n";
+    std::cout << "1. Check account balance\n";
+    std::cout << "2. Make a payment\n";
+    std::cout << "3. Speak to a representative\n";
+    std::cout << "4. Exit\n";
+}
+
+void checkBalance() {
+    std::cout << "Your account balance is $500\n";
+}
+
+void makePayment() {
+    std::cout << "Enter the payment amount: ";
+    double amount;
+    std::cin >> amount;
+    std::cout << "Payment of $" << amount << " successfully made\n";
+}
+
+void speakToRepresentative() {
+    std::cout << "Please hold while we connect you to a representative\n";
+}
+
+int main() {
+    int choice;
+    bool running = true;
+
+    while (running) {
+        displayMenu();
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+
+        switch (choice) {
+            case 1:
+                checkBalance();
+                break;
+            case 2:
+                makePayment();
+                break;
+            case 3:
+                speakToRepresentative();
+                break;
+            case 4:
+                std::cout << "Exiting the Automated Phone System\n";
+                running = false;
+                break;
+            default:
+                std::cout << "Invalid choice. Please try again.\n";
+                break;
+        }
+    }
+
+    return 0;
+}
